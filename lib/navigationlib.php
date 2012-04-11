@@ -2189,8 +2189,27 @@ class global_navigation extends navigation_node {
         if ($course->id != SITEID && !$course->visible) {
             if (is_role_switched($course->id)) {
                 // user has to be able to access course in order to switch, let's skip the visibility test here
-            } else if (!has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
-                return false;
+            } else {
+                $instances = enrol_get_instances($course->id, true);
+                $plugins   = enrol_get_plugins(true);
+                $self_enrollable = false;
+                foreach ($instances as $instance) {
+                    if ($instance->enrol == 'guest') {
+                        $self_enrollable = true;
+                        break;
+                    }
+                    if (!isset($plugins[$instance->enrol])) {
+                        continue;
+                    }
+                    $plugin = $plugins[$instance->enrol];
+                    if ($plugin->show_enrolme_link($instance)) {
+                        $self_enrollable = true;
+                        break;
+                    }
+                }
+                if (!(($course->visible == 1 || has_capability('moodle/course:viewhiddencourses', $coursecontext)) && (!$CFG->hidenotenrollable || is_enrolled($coursecontext) || $self_enrollable || has_capability('moodle/course:viewhiddencourses', $coursecontext)))) {
+                    return false;
+                }
             }
         }
 

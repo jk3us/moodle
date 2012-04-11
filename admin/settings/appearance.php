@@ -96,6 +96,7 @@ if ($hassiteconfig) { // speedup for non-admins, add all caps used on this page
         HOMEPAGE_USER => get_string('userpreference', 'admin')
     );
     $temp->add(new admin_setting_configselect('defaulthomepage', get_string('defaulthomepage', 'admin'), get_string('configdefaulthomepage', 'admin'), HOMEPAGE_SITE, $choices));
+    $temp->add(new admin_setting_configcheckbox('hidenotenrollable', get_string('hidenotenrollable', 'admin'), get_string('confighidenotenrollable', 'admin'), 0));
     $temp->add(new admin_setting_configcheckbox('navshowcategories', get_string('navshowcategories', 'admin'), get_string('confignavshowcategories', 'admin'), 1));
     $temp->add(new admin_setting_configcheckbox('navshowallcourses', get_string('navshowallcourses', 'admin'), get_string('confignavshowallcourses', 'admin'), 0));
     $temp->add(new admin_setting_configtext('navcourselimit',get_string('navcourselimit','admin'),get_string('confignavcourselimit', 'admin'),20,PARAM_INT));

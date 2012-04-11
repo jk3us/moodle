@@ -2404,7 +2404,24 @@ function print_courses($category) {
         echo html_writer::start_tag('ul', array('class'=>'unlist'));
         foreach ($courses as $course) {
             $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
-            if ($course->visible == 1 || has_capability('moodle/course:viewhiddencourses', $coursecontext)) {
+            $instances = enrol_get_instances($course->id, true);
+            $plugins   = enrol_get_plugins(true);
+            $self_enrollable = false;
+            foreach ($instances as $instance) {
+                if ($instance->enrol == 'guest') {
+                    $self_enrollable = true;
+                    break;
+                }
+                if (!isset($plugins[$instance->enrol])) {
+                    continue;
+                }
+                $plugin = $plugins[$instance->enrol];
+                if ($plugin->show_enrolme_link($instance)) {
+                    $self_enrollable = true;
+                    break;
+                }
+            }
+            if (($course->visible == 1 || has_capability('moodle/course:viewhiddencourses', $coursecontext)) && (!$CFG->hidenotenrollable || is_enrolled($coursecontext) || $self_enrollable || has_capability('moodle/course:viewhiddencourses', $coursecontext))) {
                 echo html_writer::start_tag('li');
                 print_course($course);
                 echo html_writer::end_tag('li');

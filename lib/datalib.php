@@ -412,12 +412,25 @@ function get_courses($categoryid="all", $sort="c.sortorder ASC", $fields="c.*") 
         // loop throught them
         foreach ($courses as $course) {
             context_instance_preload($course);
-            if (isset($course->visible) && $course->visible <= 0) {
-                // for hidden courses, require visibility check
-                if (has_capability('moodle/course:viewhiddencourses', get_context_instance(CONTEXT_COURSE, $course->id))) {
-                    $visiblecourses [$course->id] = $course;
+            $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+            $instances = enrol_get_instances($course->id, true);
+            $plugins   = enrol_get_plugins(true);
+            $self_enrollable = false;
+            foreach ($instances as $instance) {
+                if ($instance->enrol == 'guest') {
+                    $self_enrollable = true;
+                    break;
                 }
-            } else {
+                if (!isset($plugins[$instance->enrol])) {
+                    continue;
+                }
+                $plugin = $plugins[$instance->enrol];
+                if ($plugin->show_enrolme_link($instance)) {
+                    $self_enrollable = true;
+                    break;
+                }
+            }
+            if (($course->visible == 1 || has_capability('moodle/course:viewhiddencourses', $coursecontext)) && (!$CFG->hidenotenrollable || is_enrolled($coursecontext) || $self_enrollable || has_capability('moodle/course:viewhiddencourses', $coursecontext))) {
                 $visiblecourses [$course->id] = $course;
             }
         }
