@@ -269,7 +269,8 @@ class condition_info_section extends condition_info_base {
                         array($this->item->groupingid, $userid));
                 if (!$gotit && !has_capability('moodle/site:accessallgroups', $context, $userid)) {
                     $available = false;
-                    $information .= html_writer::tag('span',get_string('groupingnoaccess', 'condition'),array('class'=>"conditionalrule groupingnoaccess"));
+                    $information .= html_writer::tag('span',
+                        get_string('groupingnoaccess', 'condition'), array('class'=>"conditionalrule groupingnoaccess"));
                 }
             } else {
                 // Request is for current user - use cache
@@ -298,7 +299,8 @@ class condition_info_section extends condition_info_base {
                 $usergroupings = $CONDITIONLIB_PRIVATE->groupingscache[$this->item->course];
                 if ($usergroupings !== true && !array_key_exists($this->item->groupingid, $usergroupings)) {
                     $available = false;
-                    $information .= html_writer::tag('span',get_string('groupingnoaccess', 'condition'),array('class'=>"conditionalrule groupingnoaccess"));
+                    $information .= html_writer::tag('span',
+                        get_string('groupingnoaccess', 'condition'), array('class'=>"conditionalrule groupingnoaccess"));
                 }
             }
         }
@@ -626,7 +628,8 @@ abstract class condition_info_base {
                 } else {
                     $string = 'range';
                 }
-                $information .= html_writer::tag('span',get_string('requires_grade_'.$string, 'condition', $minmax->name).' ',array('class'=>"conditionalrule requires_grade"));
+                $information .= html_writer::tag('span', get_string('requires_grade_'.$string, 'condition', $minmax->name).' ',
+                    array('class'=>"conditionalrule requires_grade"));
             }
         }
 
@@ -688,11 +691,11 @@ abstract class condition_info_base {
                     array('class'=>"conditionalrule requires_date_both"));
             }
         } else if ($this->item->availablefrom) {
-            $information .= html_writer::tag('span',get_string('requires_date', 'condition',
-                self::show_time($this->item->availablefrom, $shortfrom)),array('class'=>"conditionalrule requires_date"));
+            $information .= html_writer::tag('span', get_string('requires_date', 'condition',
+                self::show_time($this->item->availablefrom, $shortfrom)), array('class'=>"conditionalrule requires_date"));
         } else if ($this->item->availableuntil) {
-            $information .= html_writer::tag('span',get_string('requires_date_before', 'condition',
-                self::show_time($displayuntil, $shortuntil)),array('class'=>"conditionalrule requires_date_before"));
+            $information .= html_writer::tag('span', get_string('requires_date_before', 'condition',
+                self::show_time($displayuntil, $shortuntil)), array('class'=>"conditionalrule requires_date_before"));
         }
 
         $information = trim($information);
@@ -820,7 +823,9 @@ abstract class condition_info_base {
                     } else {
                         $string = 'range';
                     }
-                    $information .= html_writer::tag('span',get_string('requires_grade_' . $string, 'condition', $minmax->name).' ',array('class'=>"conditionalrule requires_grade"));
+                    $information .= html_writer::tag('span',
+                        get_string('requires_grade_' . $string, 'condition', $minmax->name).' ',
+                        array('class'=>"conditionalrule requires_grade"));
                 }
             }
         }
@@ -831,7 +836,8 @@ abstract class condition_info_base {
                 $available = false;
 
                 $information .= html_writer::tag('span',
-                    get_string('requires_date', 'condition', self::show_time($this->item->availablefrom, self::is_midnight($this->item->availablefrom))),
+                    get_string('requires_date', 'condition',
+                        self::show_time($this->item->availablefrom, self::is_midnight($this->item->availablefrom))),
                     array('class'=>"conditionalrule availablefrom"));
             }
         }
